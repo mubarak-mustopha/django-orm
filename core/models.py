@@ -4,11 +4,25 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Restaurant(models.Model):
+    class TypeChoices(models.TextChoices):
+        INDIAN = "IN", "Indian"
+        CHINESE = "CH", "Chinese"
+        ITALIAN = "IT", "Italian"
+        GREEK = "GK", "Greek"
+        MEXICAN = "MX", "Mexican"
+        FASTFOOD = "FF", "Fast Food"
+        OTHER = "OT", "Other"
+
     name = models.CharField(max_length=100)
     website = models.URLField(default="")
     date_opened = models.DateField()
     latitude = models.FloatField()
     longitude = models.FloatField()
+    restuarant_type = models.CharField(
+        max_length=2,
+        choices=TypeChoices.choices,
+        default=TypeChoices.FASTFOOD,
+    )
 
     def __str__(self):
         return self.name
@@ -21,3 +35,4 @@ class Rating(models.Model):
 
     def __str__(self) -> str:
         return f"Rating: {self.rating}"
+
