@@ -36,3 +36,12 @@ class Rating(models.Model):
     def __str__(self) -> str:
         return f"Rating: {self.rating}"
 
+
+class Sale(models.Model):
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    income = models.DecimalField(max_digits=8, decimal_places=2)
+    datetime = models.DateTimeField() 
