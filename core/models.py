@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+
+
+def validate_name_begins_with_a(value):
+    if not value.startswith("A"):
+        raise ValidationError("Restaurant name must begin with 'a'.")
 
 
 # Create your models here.
@@ -13,11 +20,15 @@ class Restaurant(models.Model):
         FASTFOOD = "FF", "Fast Food"
         OTHER = "OT", "Other"
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, validators=[validate_name_begins_with_a])
     website = models.URLField(default="")
     date_opened = models.DateField()
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(
+        validators=[MinValueValidator(-90), MaxValueValidator(90)],
+    )
+    longitude = models.FloatField(
+        validators=[MinValueValidator(-180), MaxValueValidator(180)],
+    )
     restuarant_type = models.CharField(
         max_length=2,
         choices=TypeChoices.choices,
@@ -30,8 +41,12 @@ class Restaurant(models.Model):
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField()
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name="ratings"
+    )
+    rating = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
 
     def __str__(self) -> str:
         return f"Rating: {self.rating}"
@@ -39,9 +54,7 @@ class Rating(models.Model):
 
 class Sale(models.Model):
     restaurant = models.ForeignKey(
-        Restaurant,
-        on_delete=models.SET_NULL,
-        null=True,
+        Restaurant, on_delete=models.SET_NULL, null=True, related_name="sales"
     )
     income = models.DecimalField(max_digits=8, decimal_places=2)
-    datetime = models.DateTimeField() 
+    datetime = models.DateTimeField()
