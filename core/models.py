@@ -29,7 +29,7 @@ class Restaurant(models.Model):
     longitude = models.FloatField(
         validators=[MinValueValidator(-180), MaxValueValidator(180)],
     )
-    restuarant_type = models.CharField(
+    restaurant_type = models.CharField(
         max_length=2,
         choices=TypeChoices.choices,
         default=TypeChoices.FASTFOOD,

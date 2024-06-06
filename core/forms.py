@@ -11,4 +11,4 @@ class RatingForm(forms.ModelForm):
 class RestaurantForm(forms.ModelForm):
     class Meta:
         model = Restaurant
-        fields = ("name", "restuarant_type")
+        fields = ("name", "restaurant_type")
