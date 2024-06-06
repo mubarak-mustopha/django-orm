@@ -20,7 +20,7 @@ class Restaurant(models.Model):
         FASTFOOD = "FF", "Fast Food"
         OTHER = "OT", "Other"
 
-    name = models.CharField(max_length=100, validators=[validate_name_begins_with_a])
+    name = models.CharField(max_length=100)
     website = models.URLField(default="")
     date_opened = models.DateField()
     latitude = models.FloatField(
@@ -37,6 +37,10 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        print(self._state.adding)
+        super().save(*args, **kwargs)
 
 
 class Rating(models.Model):
