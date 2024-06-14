@@ -53,7 +53,7 @@ class Staff(models.Model):
     restaurants = models.ManyToManyField(Restaurant, through="StaffRestaurant")
 
     def __str__(self):
-        return self.name
+        return self.name 
 
 
 class StaffRestaurant(models.Model):
