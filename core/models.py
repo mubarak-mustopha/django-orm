@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
+from django.db.models.functions import Lower
 
 
 def validate_name_begins_with_a(value):
@@ -35,12 +36,30 @@ class Restaurant(models.Model):
         default=TypeChoices.FASTFOOD,
     )
 
+    class Meta:
+        ordering = (Lower("name"),)
+        get_latest_by = "date_opened"
+
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
         print(self._state.adding)
         super().save(*args, **kwargs)
+
+
+class Staff(models.Model):
+    name = models.CharField(max_length=128)
+    restaurants = models.ManyToManyField(Restaurant, through="StaffRestaurant")
+
+    def __str__(self):
+        return self.name
+
+
+class StaffRestaurant(models.Model):
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    salary = models.FloatField(null=True)
 
 
 class Rating(models.Model):

@@ -3,12 +3,19 @@
 
 {% block content %}
 
-<form method="POST">
-    {% csrf_token %}
-
-    {{ form.as_p }}
-    
-    <button class="btn btn-primary" type="submit">Submit</button>
-</form>
-
+    {% for r in restaurants %}
+        <h2>{{r.name}}</h2>
+        <ul>
+            <h3>Rating</h3>
+            {% for rating in r.ratings.all %}
+                <p>{{rating}}</p>
+            {% endfor %}
+        </ul>
+        <ul>
+            <h3>Sales</h3>
+            {% for sale in r.sales.all %}
+                <p>{{sale.income}}</p>
+            {% endfor %}
+        </ul>
+    {% endfor %}
 {% endblock %}
