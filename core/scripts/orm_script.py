@@ -8,12 +8,10 @@ import random
 
 
 def run():
-    IT = Restaurant.TypeChoices.ITALIAN
-    ratings = Rating.objects.filter(restaurant__restaurant_type=IT).values(
-        "rating", "restaurant__name"
-    )
-    print(ratings) 
-    pp(connection.queries)
+    restaurants = Restaurant.objects.values_list("name", flat=True)
+
+    print(restaurants)
+    # pp(connection.queries)
 
 
 # shell_plus --print-sql
