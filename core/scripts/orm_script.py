@@ -10,17 +10,11 @@ import random
 
 def run():
     # group by all cols in restaurant table
-    rs = Restaurant.objects.annotate(
-        num_ratings=Count("ratings"),
-        avg_rating=Avg("ratings__rating"),
+    rs = Restaurant.objects.annotate(total_sales=Sum("sales__income")).filter(
+        total_sales__lt=300
     )
-    print(rs.values("name", "num_ratings", "avg_rating"))
+    print(rs.aggregate(avg_sales=Avg("total_sales")))
 
-    # group by single column
-    rs = Restaurant.objects.values("restaurant_type").annotate(
-        avg_rating=Avg("ratings__rating"),
-    )
-    print(rs)
     pp(connection.queries)
 
 
