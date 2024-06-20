@@ -53,7 +53,7 @@ class Staff(models.Model):
     restaurants = models.ManyToManyField(Restaurant, through="StaffRestaurant")
 
     def __str__(self):
-        return self.name 
+        return self.name
 
 
 class StaffRestaurant(models.Model):
@@ -80,4 +80,5 @@ class Sale(models.Model):
         Restaurant, on_delete=models.SET_NULL, null=True, related_name="sales"
     )
     income = models.DecimalField(max_digits=8, decimal_places=2)
+    expenditure = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     datetime = models.DateTimeField()
