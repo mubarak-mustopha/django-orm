@@ -7,14 +7,12 @@ from django.db.models import F
 from pprint import pprint as pp
 import random
 
- 
+
 def run():
-    sales = Sale.objects.all()
-
-    for sale in sales:
-        sale.expenditure = random.uniform(5, 100)
-
-    Sale.objects.bulk_update(sales, ["expenditure"])
+    sales = Sale.objects.filter(expenditure__gt=F("income")).values(
+        "income", "expenditure"
+    )
+    print(sales)
     pp(connection.queries)
 
 
