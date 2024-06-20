@@ -9,10 +9,12 @@ import random
 
 
 def run():
-    sales = Sale.objects.filter(expenditure__gt=F("income")).values(
-        "income", "expenditure"
+    sales = Sale.objects.annotate(profit=F("income") - F("expenditure")).values(
+        "income",
+        "expenditure",
+        "profit",
     )
-    print(sales)
+    print(sales[0])
     pp(connection.queries)
 
 
