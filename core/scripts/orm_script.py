@@ -9,13 +9,15 @@ import random
 
 
 def run():
-    sales = Sale.objects.aggregate(
-        profit=Count("id", filter=Q(income__gt=F("expenditure"))),
-        loss=Count("id", filter=Q(income__lt=F("expenditure"))),
-    )
-    print(sales)
+    rating = Rating.objects.first()
+    print(rating.rating)
+    rating.rating = F("rating") + 1
+    rating.save()
 
-    pp(connection.queries)
+    rating.refresh_from_db( )
+    print(rating.rating)
+
+    # pp(connection.queries)
 
 
 # shell_plus --print-sql
