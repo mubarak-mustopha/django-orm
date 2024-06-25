@@ -9,15 +9,22 @@ import random
 
 
 def run():
-    rating = Rating.objects.first()
-    print(rating.rating)
-    rating.rating = F("rating") + 1
-    rating.save()
+    # Find Sales where
+    #   - profit is greater than expenditure , OR
+    #   - restaurant name contains a number
+    profits = Q(income__gt=F("expenditure"))
+    has_num = Q(restaurant__name__regex=r"[0-9]+")
 
-    rating.refresh_from_db( )
-    print(rating.rating)
+    sales = Sale.objects.filter(has_num | profits)
 
-    # pp(connection.queries)
+    print(
+        sales.values(
+            "restaurant__name",
+            "income",
+            "expenditure",
+        )
+    )
+    pp(connection.queries)
 
 
 # shell_plus --print-sql
