@@ -35,7 +35,8 @@ class Restaurant(models.Model):
         choices=TypeChoices.choices,
         default=TypeChoices.FASTFOOD,
     )
-    capacity = models.PositiveSmallIntegerField(null = True, blank = True)
+    capacity = models.PositiveSmallIntegerField(null=True, blank=True)
+    pka = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         ordering = (Lower("name"),)
