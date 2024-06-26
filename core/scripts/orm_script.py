@@ -9,21 +9,16 @@ import random
 
 
 def run():
-    # Find Sales where
-    #   - profit is greater than expenditure , OR
-    #   - restaurant name contains a number
-    profits = Q(income__gt=F("expenditure"))
-    has_num = Q(restaurant__name__regex=r"[0-9]+")
+    r1 = Restaurant.objects.first()
+    r2 = Restaurant.objects.last()
 
-    sales = Sale.objects.filter(has_num | profits)
+    r1.capacity = 10
+    r2.capacity = 20
+    r1.save()
+    r2.save()
 
-    print(
-        sales.values(
-            "restaurant__name",
-            "income",
-            "expenditure",
-        )
-    )
+    print(Restaurant.objects.filter(capacity__isnull=False))
+
     pp(connection.queries)
 
 
