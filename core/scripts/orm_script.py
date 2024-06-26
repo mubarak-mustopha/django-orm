@@ -10,13 +10,8 @@ import random
 
 def run():
 
-    print(
-        Rating.objects.filter(rating__lt=0).aggregate(
-            avg_rating=Coalesce(Sum("rating"), 0)
-        )
-    )
+    print(Restaurant.objects.annotate(pname=Coalesce("pka", "name")).values("pname"))
 
-    print(Restaurant.objects.aggregate(total_cap=Sum("capacity", default=0)))
     pp(connection.queries)
 
 
