@@ -9,16 +9,10 @@ import random
 
 
 def run():
-    r1 = Restaurant.objects.first()
-    r2 = Restaurant.objects.last()
-
-    r1.capacity = 10
-    r2.capacity = 20
-    r1.save()
-    r2.save()
-
-    print(Restaurant.objects.filter(capacity__isnull=False))
-
+    r = Restaurant.objects.order_by(F("capacity").asc(nulls_last=True)).values(
+        "name", "capacity"
+    )
+    print(r)
     pp(connection.queries)
 
 
