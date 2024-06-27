@@ -10,33 +10,27 @@ import random
 
 def run():
 
-    rating_stats = Rating.objects.aggregate(
-        avg=Avg("rating"), max=Max("rating"), min=Min("rating")
-    )
+    continent_to_country = {
+        "Asia": ["CH", "IN"],
+        "America": ["MX"],
+        "Europe": ["IT", "GK"],
+    }
+
     rs = Restaurant.objects.annotate(
-        avg_rating=Avg("ratings__rating"),
-        num_rating=Count("ratings"),
-    )
-    rs = rs.annotate(
-        rating_rank=Case(
+        continent=Case(
+            When(restaurant_type__in=continent_to_country["Asia"], then=Value("Asia")),
             When(
-                avg_rating__gt=rating_stats["avg"], num_rating__gt=1, then=Value("High")
+                restaurant_type__in=continent_to_country["America"],
+                then=Value("America"),
             ),
             When(
-                avg_rating__range=(2, rating_stats["avg"]),
-                num_rating__gt=1,
-                then=Value("Moderate"),
+                restaurant_type__in=continent_to_country["Europe"], then=Value("Europe")
             ),
-            When(
-                avg_rating__lt=2,
-                num_rating__gt=1,
-                then=Value("Low"),
-            ),
-            default=None,
+            default=Value("Not Specific"),
         )
     )
+    print(rs.values("restaurant_type", "continent"))
 
-    print(rs.values("avg_rating", "num_rating", "rating_rank"))
     # pp(connection.queries)
 
 
