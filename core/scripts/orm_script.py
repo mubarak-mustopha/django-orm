@@ -3,53 +3,40 @@ from core.models import Restaurant, Rating, Sale, Staff, StaffRestaurant
 from django.utils import timezone
 from django.db import connection
 from django.db.models.functions import Lower, Upper, Length, Concat, Coalesce
-from django.db.models import F, Count, Q, Sum, Avg, Case, When
+from django.db.models import F, Count, Q, Sum, Avg, Case, When, Value, Max, Min
 from pprint import pprint as pp
 import random
 
 
 def run():
-    # EX 1
 
-    # it = Restaurant.TypeChoices.ITALIAN
-
-    # rs = Restaurant.objects.annotate(
-    #     is_italian=Case(
-    #         When(restaurant_type=it, then=True),
-    #         default=False,
-    #     )
-    # )
-
-    # EX 2
-    # rs = Restaurant.objects.annotate(num_sales=Count("sales"))
-
-    # rs = rs.annotate(
-    #     high_sales=Case(
-    #         When(num_sales__gte=8, then=True),
-    #         default=False,
-    #     ),
-    # )
-
-    # print(rs.values_list("num_sales", "high_sales"))
-
-    # Restaurant average rating > 3.5
-    # Restaurant has more than 1 rating
-    # print(Rating.objects.values("rating"))
+    rating_stats = Rating.objects.aggregate(
+        avg=Avg("rating"), max=Max("rating"), min=Min("rating")
+    )
     rs = Restaurant.objects.annotate(
         avg_rating=Avg("ratings__rating"),
         num_rating=Count("ratings"),
     )
     rs = rs.annotate(
-        highly_rated=Case(
+        rating_rank=Case(
             When(
-                (Q(avg_rating__gt=3.5) & Q(num_rating__gt=1)),
-                then=True,
+                avg_rating__gt=rating_stats["avg"], num_rating__gt=1, then=Value("High")
             ),
-            default=False,
+            When(
+                avg_rating__range=(2, rating_stats["avg"]),
+                num_rating__gt=1,
+                then=Value("Moderate"),
+            ),
+            When(
+                avg_rating__lt=2,
+                num_rating__gt=1,
+                then=Value("Low"),
+            ),
+            default=None,
         )
     )
 
-    print(rs.values("avg_rating", "num_rating", "highly_rating "))
+    print(rs.values("avg_rating", "num_rating", "rating_rank"))
     # pp(connection.queries)
 
 
