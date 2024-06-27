@@ -10,10 +10,11 @@ import random
 
 def run():
 
+    types = Restaurant.TypeChoices
     continent_to_country = {
-        "Asia": ["CH", "IN"],
-        "America": ["MX"],
-        "Europe": ["IT", "GK"],
+        "Asia": [types.CHINESE, types.INDIAN],
+        "America": [types.MEXICAN],
+        "Europe": [types.ITALIAN, types.GREEK],
     }
 
     rs = Restaurant.objects.annotate(
