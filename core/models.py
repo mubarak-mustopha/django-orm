@@ -84,3 +84,22 @@ class Sale(models.Model):
     income = models.DecimalField(max_digits=8, decimal_places=2)
     expenditure = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     datetime = models.DateTimeField()
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    in_stock = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class Order(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+    )
+    quantity = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product}"

@@ -3,6 +3,8 @@
 
 {% block content %}
 
+    <h1>Welcome home bruh!</h1>
+    <p><a href="{% url 'place_order' %}">Click here</a> to place orders.</p>
     {% for r in restaurants %}
         <h2>{{r.name}}</h2>
         <ul>
